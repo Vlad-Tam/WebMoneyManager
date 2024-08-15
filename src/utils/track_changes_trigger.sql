@@ -1,8 +1,8 @@
 CREATE OR REPLACE FUNCTION track_changes()
     RETURNS TRIGGER AS $$
     BEGIN
-        INSERT INTO change_tracker (changed_table, changed_id, changed_datetime)
-        VALUES (TG_TABLE_NAME, NEW.id, now());
+        INSERT INTO change_tracker (changed_table, changed_id, changed_datetime, operation)
+        VALUES (TG_TABLE_NAME, NEW.id, now(), TG_OP);
         RETURN null;
     END;
 $$ LANGUAGE plpgsql;

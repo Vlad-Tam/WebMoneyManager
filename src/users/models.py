@@ -1,4 +1,5 @@
 from datetime import date, datetime
+from typing import Optional
 
 from sqlalchemy.orm import mapped_column, Mapped
 from sqlalchemy import text
@@ -15,6 +16,7 @@ class UserOrm(Base):
     email: Mapped[str]
     password: Mapped[str]
     main_currency: Mapped[Currency]
+    month_limit: Mapped[Optional[float]]
     birth_date: Mapped[date]
     created_at: Mapped[datetime] = mapped_column(server_default=text("TIMEZONE('utc', now())"))
 
