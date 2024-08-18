@@ -6,9 +6,9 @@ from sqlalchemy import pool
 from alembic import context
 
 from src.db.database import DATABASE_URL, Base
+from src.users.models import UserOrm                    # noqa
 from src.categories.models import CategoriesOrm         # noqa
 from src.transactions.models import TransactionsOrm     # noqa
-from src.users.models import UserOrm                    # noqa
 from src.utils.models import ChangeTrackerOrm           # noqa
 
 config = context.config

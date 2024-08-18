@@ -2,7 +2,7 @@ import enum
 from datetime import date, datetime
 from typing import Optional
 
-from pydantic import BaseModel
+from pydantic import BaseModel, EmailStr
 
 
 class Currency(enum.Enum):
@@ -16,13 +16,13 @@ class Currency(enum.Enum):
 class UserAddDTO(BaseModel):
     name: str
     surname: str
-    email: str
+    email: EmailStr
     password: str
     main_currency: Currency
     month_limit: Optional[float]
     birth_date: date
-    created_at: datetime
 
 
 class UserDTO(UserAddDTO):
     id: int
+    created_at: datetime

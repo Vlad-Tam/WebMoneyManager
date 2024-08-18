@@ -1,5 +1,6 @@
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
 from sqlalchemy.orm import DeclarativeBase
+from sqlalchemy.util import greenlet_spawn
 
 from src.db.db_config import DB_HOST, DB_USER, DB_NAME, DB_PORT, DB_PASS
 
