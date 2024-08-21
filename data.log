@@ -1,8 +1,1 @@
-[DEBUG] - 2024-08-18 23:40:01 - root: Endpoint '/4/transactions' was called
-[WARNING] - 2024-08-18 23:40:01 - root: Endpoint '/4/transactions' raised an exception InvalidRequestError
-[DEBUG] - 2024-08-18 23:41:24 - root: Endpoint '/54/transactions' was called
-[INFO] - 2024-08-18 23:41:24 - root: Endpoint '/54/transactions' worked successfully
-[DEBUG] - 2024-08-18 23:41:35 - root: Endpoint '/4/transactions' was called
-[WARNING] - 2024-08-18 23:41:35 - root: Endpoint '/4/transactions' raised an exception InvalidRequestError
-[DEBUG] - 2024-08-18 23:45:23 - root: Endpoint '/4/transactions' was called
-[INFO] - 2024-08-18 23:45:23 - root: Endpoint '/4/transactions' worked successfully
+[ERROR] - 2024-08-21 23:38:45 - root: Endpoint '/4/transactions' raised an exception "int() argument must be a string, a bytes-like object or a number, not 'list'"
