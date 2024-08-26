@@ -2,5 +2,5 @@ venv/
 __pycache__/
 .idea
 **/venv/
-.env
-data.log
+*.env
+*data.log

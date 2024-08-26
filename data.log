@@ -1,1 +1,0 @@
-[ERROR] - 2024-08-21 23:38:45 - root: Endpoint '/4/transactions' raised an exception "int() argument must be a string, a bytes-like object or a number, not 'list'"
