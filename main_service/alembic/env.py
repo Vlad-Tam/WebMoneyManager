@@ -5,18 +5,20 @@ from sqlalchemy import pool
 
 from alembic import context
 
-from main_service.src.db.database import DATABASE_URL, Base
-from main_service.src.users.models import UserOrm                    # noqa
-from main_service.src.categories.models import CategoriesOrm         # noqa
-from main_service.src.transactions.models import TransactionsOrm     # noqa
-from main_service.src.utils.models import ChangeTrackerOrm           # noqa
+from main_service.src.infrastructure.models.base import Base
+from main_service.src.infrastructure.repositories.db_repo import database_repository
+from main_service.src.infrastructure.models.user import UserOrm                    # noqa
+from main_service.src.infrastructure.models.category import CategoriesOrm         # noqa
+from main_service.src.infrastructure.models.transaction import TransactionsOrm     # noqa
+from main_service.src.infrastructure.models.change_tracker import ChangeTrackerOrm           # noqa
+from main_service.src.infrastructure.models.access_token import AccessTokenOrm        # noqa
 
 config = context.config
 
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)
 
-config.set_main_option("sqlalchemy.url", DATABASE_URL + "?async_fallback=True")
+config.set_main_option("sqlalchemy.url", database_repository.DATABASE_URL + "?async_fallback=True")
 
 target_metadata = Base.metadata
 

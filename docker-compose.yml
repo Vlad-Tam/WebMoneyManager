@@ -4,29 +4,27 @@ services:
   db:
     image: postgres:16
     container_name: database
-    environment:
-      - POSTGRES_DB=web_money_manager,web_currency_service
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=17215
-
+    env_file:
+      postgres.env
     ports:
       - "5433:5432"
+    networks:
+      - app-network
     restart: always
 
   main_service:
     build:
       context: ./main_service
     container_name: main_service
+    env_file:
+      - main_service/config/.env
     ports:
       - "8000:8000"
+    networks:
+      - app-network
     depends_on:
       - db
 
-  currency_service:
-    build:
-      context: ./currency_service
-    container_name: currency_service
-    ports:
-      - "8001:8001"
-    depends_on:
-      - db
+networks:
+  app-network:
+    driver: bridge

@@ -1,7 +1,7 @@
 import uvicorn
 from fastapi import FastAPI
 
-from currency_service.src.infrastructure.api.v1.currency import router as currency_router
+from currency_service.src.infrastructure.api.api_v1.currency import router as currency_router
 
 app = FastAPI()
 app.include_router(currency_router)

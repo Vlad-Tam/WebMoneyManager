@@ -3,7 +3,7 @@ from typing import Union, Optional
 
 from currency_service.src.domain.entities.request import RequestModel
 from currency_service.src.domain.entities.response import ResponseSuccess, ResponseStatus, \
-    ResponseFailure
+    ResponseFailure, ResponseModel
 from currency_service.src.domain.interfaces.usecase import IUseCase
 from currency_service.src.domain.usecases.change_base_currency import ChangeBaseCurrency
 from currency_service.src.domain.usecases.parse_api_response_to_dto import ParseAPIResponseToDTO
@@ -27,7 +27,13 @@ class GetExchangeRateHistory(IUseCase):
         request_date: str
         requested_currencies: Optional[list[str]]
 
-    async def execute(self, request: Request) -> Union[ResponseSuccess, ResponseFailure]:
+    class Response(ResponseModel):
+        response: Union[ResponseSuccess, ResponseFailure]
+
+        def __init__(self, response: Union[ResponseSuccess, ResponseFailure]):
+            super().__init__(response=response)
+
+    async def execute(self, request: Request) -> Response:
         self.logger.debug(f"Method '{self.__class__.__name__}.execute' was called")
         request_date = date.fromisoformat(request.request_date)
         requested_base_currency = request.base_currency.upper()
@@ -42,7 +48,7 @@ class GetExchangeRateHistory(IUseCase):
                 await self.db_repository.insert_exchange_rate(result_dto)
         except Exception as e:
             self.logger.error(f"Class '{self.__class__.__name__}' raised an exception \"{e}\"")
-            return ResponseFailure(status=ResponseStatus.NOT_FOUND, details="Getting result error")
+            return self.Response(ResponseFailure(status=ResponseStatus.NOT_FOUND, details="Getting result error"))
 
         try:
             if requested_base_currency != self.BASE_CURRENCY:
@@ -59,11 +65,11 @@ class GetExchangeRateHistory(IUseCase):
                 result_dto.rates = selected_rates
         except KeyError as e:
             self.logger.error(f"Class '{self.__class__.__name__}' raised an exception \"{e}\"")
-            return ResponseFailure(status=ResponseStatus.NOT_FOUND, details="Currency is not found")
+            return self.Response(ResponseFailure(status=ResponseStatus.NOT_FOUND, details="Currency is not found"))
         except Exception as e:
             self.logger.error(f"Class '{self.__class__.__name__}' raised an exception \"{e}\"")
-            return ResponseFailure(status=ResponseStatus.INTERNAL_ERROR, details="Processing result error")
+            return self.Response(ResponseFailure(status=ResponseStatus.INTERNAL_ERROR, details="Processing result error"))
 
         self.logger.info(f"Method '{self.__class__.__name__}.execute' worked successfully")
-        return ResponseSuccess(data=result_dto, status=ResponseStatus.SUCCESS)
+        return self.Response(ResponseSuccess(data=result_dto, status=ResponseStatus.SUCCESS))
 

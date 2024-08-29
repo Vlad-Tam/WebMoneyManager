@@ -10,6 +10,7 @@ class ResponseModel(BaseModel):
 
 class ResponseStatus(enum.Enum):
     SUCCESS = (200, "Success")
+    CREATED = (201, "Created")
     BAD_REQUEST = (400, "Invalid request")
     NOT_FOUND = (404, "Resource not found")
     INTERNAL_ERROR = (500, "Internal server error")

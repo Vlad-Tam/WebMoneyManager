@@ -14,10 +14,10 @@ from currency_service.src.infrastructure.config.db_config import DBConfig
 class DBRepository:
     DATABASE_URL = DBConfig().get_db_url()
     engine = create_async_engine(DATABASE_URL)
-    session = async_sessionmaker(engine)
+    a_sessionmaker = async_sessionmaker(engine)
 
     async def get_exchange_rate_by_date(self, required_date: date) -> Optional[ExchangeRateDTO]:
-        async with self.session() as new_session:
+        async with self.a_sessionmaker() as new_session:
             query = (
                 select(ExchangeRateORM)
                 .where(ExchangeRateORM.request_date == required_date)
@@ -31,7 +31,7 @@ class DBRepository:
                 return dto_exchange_rate
 
     async def insert_exchange_rate(self, exchange_rate_dto: AddExchangeRateDTO) -> int:
-        async with self.session() as new_session:
+        async with self.a_sessionmaker() as new_session:
             insert_stmt = insert(ExchangeRateORM).values(
                 base_currency=exchange_rate_dto.base_currency,
                 request_date=exchange_rate_dto.request_date,
