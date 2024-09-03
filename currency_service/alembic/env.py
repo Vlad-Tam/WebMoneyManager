@@ -5,7 +5,7 @@ from sqlalchemy import pool
 
 from alembic import context
 
-from currency_service.src.infrastructure.repositories.db_repository import DBRepository
+from currency_service.src.infrastructure.repositories.db_repo import DBRepository
 from currency_service.src.infrastructure.models.base import Base
 from currency_service.src.infrastructure.models.exchange_rate import ExchangeRateORM    # noqa
 

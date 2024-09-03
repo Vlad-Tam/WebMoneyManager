@@ -23,6 +23,8 @@ class UserOrm(SQLAlchemyBaseUserTable[int], Base):
         server_default=text("TIMEZONE('utc', now())")
     )
 
+    Categories: Mapped[list["CategoriesOrm"]] = relationship()
+
     @classmethod
     def get_db(cls, session: "AsyncSession"):
         return SQLAlchemyUserDatabase(session, UserOrm)

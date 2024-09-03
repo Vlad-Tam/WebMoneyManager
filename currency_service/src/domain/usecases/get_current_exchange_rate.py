@@ -8,15 +8,16 @@ from currency_service.src.domain.interfaces.usecase import IUseCase
 from currency_service.src.domain.usecases.change_base_currency import ChangeBaseCurrency
 from currency_service.src.domain.usecases.parse_api_response_to_dto import ParseAPIResponseToDTO
 from currency_service.src.infrastructure.config.logging_config import LoggingConfig
-from currency_service.src.infrastructure.repositories.api_repository import ExchangeRateRepository
-from currency_service.src.infrastructure.repositories.db_repository import DBRepository
+from currency_service.src.infrastructure.repositories.api_repo import APIRepository
+from currency_service.src.infrastructure.repositories.db_repo import database_repository
+from currency_service.src.infrastructure.repositories.exchange_rate_repo import ExchangeRateRepository
 
 
 class GetCurrentExchangeRate(IUseCase):
 
     def __init__(self):
-        self.db_repository = DBRepository()
-        self.api_repository = ExchangeRateRepository()
+        self.db_repository = ExchangeRateRepository(database_repository)
+        self.api_repository = APIRepository()
         self.currency_base_changer = ChangeBaseCurrency()
         self.api_parser = ParseAPIResponseToDTO()
         self.BASE_CURRENCY = "USD"
@@ -28,6 +29,9 @@ class GetCurrentExchangeRate(IUseCase):
 
     class Response(ResponseModel):
         response: Union[ResponseSuccess, ResponseFailure]
+
+        class Config:
+            arbitrary_types_allowed = True
 
         def __init__(self, response: Union[ResponseSuccess, ResponseFailure]):
             super().__init__(response=response)

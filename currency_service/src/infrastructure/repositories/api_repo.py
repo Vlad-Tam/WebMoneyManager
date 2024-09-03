@@ -5,7 +5,7 @@ import aiohttp
 from currency_service.src.infrastructure.config.api_config import APIConfig
 
 
-class ExchangeRateRepository:
+class APIRepository:
     api_config = APIConfig()
 
     @staticmethod

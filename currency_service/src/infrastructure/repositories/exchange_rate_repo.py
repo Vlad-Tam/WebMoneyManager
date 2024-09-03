@@ -5,19 +5,16 @@ from sqlalchemy import select, insert
 
 from currency_service.src.domain.entities.exchange_rate import ExchangeRateDTO, AddExchangeRateDTO
 from currency_service.src.infrastructure.models.exchange_rate import ExchangeRateORM
-
-from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
-
-from currency_service.src.infrastructure.config.db_config import DBConfig
+from currency_service.src.infrastructure.repositories.db_repo import database_repository
 
 
-class DBRepository:
-    DATABASE_URL = DBConfig().get_db_url()
-    engine = create_async_engine(DATABASE_URL)
-    a_sessionmaker = async_sessionmaker(engine)
+class ExchangeRateRepository:
+
+    def __init__(self, db_repository):
+        self.repository = db_repository
 
     async def get_exchange_rate_by_date(self, required_date: date) -> Optional[ExchangeRateDTO]:
-        async with self.a_sessionmaker() as new_session:
+        async with self.repository.a_sessionmaker() as new_session:
             query = (
                 select(ExchangeRateORM)
                 .where(ExchangeRateORM.request_date == required_date)
@@ -31,7 +28,7 @@ class DBRepository:
                 return dto_exchange_rate
 
     async def insert_exchange_rate(self, exchange_rate_dto: AddExchangeRateDTO) -> int:
-        async with self.a_sessionmaker() as new_session:
+        async with self.repository.a_sessionmaker() as new_session:
             insert_stmt = insert(ExchangeRateORM).values(
                 base_currency=exchange_rate_dto.base_currency,
                 request_date=exchange_rate_dto.request_date,

@@ -1,4 +1,4 @@
-from typing import Optional, Union
+from typing import Optional
 
 from fastapi import APIRouter, Query, HTTPException
 
@@ -33,9 +33,9 @@ async def get_exchange_rates(base_currency: str = "USD",
             status_code=ResponseStatus.BAD_REQUEST.status_code,
             detail=ResponseStatus.BAD_REQUEST.status_msg
         )
-    response = await GetCurrentExchangeRate().execute(GetCurrentExchangeRate.Request(
+    response = (await GetCurrentExchangeRate().execute(GetCurrentExchangeRate.Request(
         base_currency=request.base_currency, requested_currencies=request.requested_currencies)
-    ).response
+    )).response
 
     if isinstance(response, ResponseFailure):
         raise HTTPException(status_code=response.status_code, detail=response.details)
@@ -59,11 +59,11 @@ async def get_history(request_date: str,
         raise HTTPException(status_code=ResponseStatus.BAD_REQUEST.status_code,
                             detail=ResponseStatus.BAD_REQUEST.status_msg
                             )
-    response = await GetExchangeRateHistory().execute(GetExchangeRateHistory.Request(
+    response = (await GetExchangeRateHistory().execute(GetExchangeRateHistory.Request(
         base_currency=request.base_currency,
         request_date=request.request_date,
         requested_currencies=requested_currencies
-    )).response
+    ))).response
 
     if isinstance(response, ResponseFailure):
         raise HTTPException(status_code=response.status_code, detail=response.details)
