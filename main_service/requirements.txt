@@ -7,3 +7,6 @@ python-dotenv
 sqlalchemy
 uvicorn
 pydantic
+pika
+pika-stubs
+aio-pika

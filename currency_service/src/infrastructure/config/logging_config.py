@@ -22,7 +22,7 @@ class LoggingConfig:
             },
             "file": {
                 "class": "logging.FileHandler",
-                "level": "INFO",
+                "level": "ERROR",
                 "formatter": "simple",
                 "filename": LOG_FILENAME,
             }
@@ -38,3 +38,6 @@ class LoggingConfig:
     def get_logger(self):
         logging.config.dictConfig(self.LOGGING_CONFIG)
         return logging.getLogger()
+
+
+logging_config = LoggingConfig()

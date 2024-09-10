@@ -22,7 +22,7 @@ class LoggingConfig:
             },
             "file": {
                 "class": "logging.FileHandler",
-                "level": "INFO",
+                "level": "ERROR",
                 "formatter": "simple",
                 "filename": LOG_FILENAME,
             },

@@ -1,15 +1,13 @@
 FROM python:3.9
 LABEL authors="VladTam"
 
-WORKDIR /WebMoneyManager
-
-RUN mkdir -p main_service
-
 WORKDIR /WebMoneyManager/main_service
 
-COPY . .
+COPY requirements.txt .
 
 RUN pip install -r requirements.txt
+
+COPY . .
 
 CMD ["alembic", "upgrade", "head"]
 

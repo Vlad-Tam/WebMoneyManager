@@ -2,14 +2,19 @@ from typing import Annotated
 
 from fastapi import APIRouter, Depends
 from fastapi.exceptions import HTTPException
+from sqlalchemy import select
 
-from main_service.src.domain.entities.transaction import TransactionAddDTO
+from main_service.src.domain.entities.category import CategoryDTO
+from main_service.src.domain.entities.transaction import TransactionAddDTO, TransactionDTO
 from main_service.src.infrastructure.api.dependencies.authentication.fastapi_usr import current_user
 from main_service.src.infrastructure.config.logging_config import logging_config
+from main_service.src.infrastructure.models.category import CategoriesOrm
+from main_service.src.infrastructure.models.transaction import TransactionsOrm
 from main_service.src.infrastructure.models.user import UserOrm
 from main_service.src.infrastructure.repositories.transaction_repo import (
     TransactionRepository,
 )
+from main_service.src.infrastructure.repositories.db_repo import database_repository
 
 router = APIRouter(
     prefix="/transactions",
@@ -188,5 +193,26 @@ async def update_transaction(
 
 
 @router.get("/{transaction_id}/edit")
-def get_update_transactions_form(transaction_id: int):
+async def get_update_transactions_form(transaction_id: int):
     return f"Transactions GET page for /transactions/{transaction_id}/edit is in development"
+
+    # repository = database_repository
+    # print(repository.DATABASE_URL)
+    # async with repository.a_sessionmaker() as new_session:
+    #     print(1)
+    #     query = (
+    #         select(CategoriesOrm)
+    #         .limit(100)
+    #     )
+    #
+    #     result = await new_session.execute(query)
+    #     print(2)
+    #     orm_list = result.unique().scalars().all()
+    #     print(3)
+    #     dto_list = [
+    #         CategoryDTO.model_validate(row, from_attributes=True)
+    #         for row in orm_list
+    #     ]
+    #     print(4)
+    #     return dto_list
+

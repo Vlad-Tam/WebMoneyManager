@@ -11,3 +11,6 @@ aiohttp
 pytest
 pytest-asyncio
 pytest-cov
+pika
+pika-stubs
+aio-pika
