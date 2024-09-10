@@ -1,57 +1,52 @@
 import asyncio
-import json
 
-import aio_pika
 import pika
 
+from currency_service.src.domain.entities.response import ResponseFailure, ResponseSuccess
 from currency_service.src.domain.usecases.get_current_exchange_rate import GetCurrentExchangeRate
 from currency_service.src.domain.usecases.get_exchange_rate_history import GetExchangeRateHistory
-from currency_service.src.infrastructure.config.logging_config import LoggingConfig
-from currency_service.src.infrastructure.config.rmq_config import RMQ_REQUEST_QUEUE, connection_params
+from currency_service.src.domain.usecases.parse_params_from_rmq_string import ParseParamsFromRMQString
+from currency_service.src.infrastructure.config.logging_config import logging_config
+from currency_service.src.infrastructure.config.rmq_config import rmq_config, connection_params
 
-logger = LoggingConfig().get_logger()
-
-
-def parse_params_string(params: str):
-    parts = params.split(',')
-
-    request_date = parts[0]
-    base_currency = parts[1] if len(parts) > 1 else "USD"
-    requested_currencies = parts[2].split(';') if len(parts) > 2 and parts[2] else None
-
-    return request_date, base_currency, requested_currencies
+logger = logging_config.get_logger()
 
 
 def on_request(ch, method, properties, body):
-    logger.warning("ON REQUEST")
+    logger.debug("Method 'on_request' was called")
     asyncio.get_event_loop().run_until_complete(async_on_request(ch, method, properties, body))
-    # async_on_request(ch, method, properties, body)
 
 
 async def async_on_request(ch, method, properties, body):
-    logger.warning("ASYNC ON REQUEST")
-    request_date, base_currency, requested_currencies = parse_params_string(body.decode('utf-8'))
-    if request_date == "latest":
-        logger.warning("LATEST RMQ REQUEST")
+    logger.debug("Method 'async_on_request' was called")
+    params = ParseParamsFromRMQString().execute(ParseParamsFromRMQString().Request(params_str=body.decode('utf-8')))
+
+    if params.request_date == "latest":
+        logger.warning("'latest' request from RMQ")
         response = (await GetCurrentExchangeRate().execute(GetCurrentExchangeRate.Request(
-            base_currency=base_currency,
-            requested_currencies=requested_currencies
-        ))).response
-        response_str = str(response)
-        # response = "rere"
-    else:
-        logger.warning("HISTORY RMQ REQUEST")
-        logger.warning(base_currency)
-        logger.warning(request_date)
-        logger.warning(requested_currencies)
-        response = (await GetExchangeRateHistory().execute(GetExchangeRateHistory.Request(
-            base_currency=base_currency,
-            request_date=request_date,
-            requested_currencies=requested_currencies
+            base_currency=params.base_currency,
+            requested_currencies=params.requested_currencies
         ))).response
 
+
+
+    else:
+        logger.warning(f"'history' request from RMQ with date '{params.request_date}'")
+        response = (await GetExchangeRateHistory().execute(GetExchangeRateHistory.Request(
+            base_currency=params.base_currency,
+            request_date=params.request_date,
+            requested_currencies=params.requested_currencies
+        ))).response
+
+    if isinstance(response, ResponseSuccess):
         response_str = response.data.json()
-        # response = "rere2"
+
+    if isinstance(response, ResponseFailure):
+        logger.error(f"ResponseFailure ({response.status_code}, {response.details})")
+        response_str = f"ResponseFailure {response.status_code}, {response.details}".encode()
+
+    logger.warning(f"response_str: '{response_str}'")
+    logger.debug(f"Sending response from 'async_on_request'")
     ch.basic_publish(
         exchange='',
         routing_key=properties.reply_to,
@@ -60,17 +55,18 @@ async def async_on_request(ch, method, properties, body):
         ),
         body=response_str
     )
+    logger.debug("Method 'async_on_request' worked successfully")
 
 
 def start_server():
     connection = pika.BlockingConnection(parameters=connection_params)
     channel = connection.channel()
-    channel.queue_declare(queue=RMQ_REQUEST_QUEUE)
+    channel.queue_declare(queue=rmq_config.RMQ_REQUEST_QUEUE)
 
     channel.basic_consume(
-        queue=RMQ_REQUEST_QUEUE,
+        queue=rmq_config.RMQ_REQUEST_QUEUE,
         on_message_callback=on_request,
         auto_ack=True
     )
-    print("Awaiting RPC requests")
+    logger.warning("Awaiting RPC requests")
     channel.start_consuming()

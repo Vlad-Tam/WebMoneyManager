@@ -92,9 +92,9 @@ async def create_new_category(
         )
 
 
-@router.get("/add")
-def get_create_categories_form():
-    return f"Categories /add GET page is in development"
+# @router.get("/add")
+# def get_create_categories_form():
+#     return f"Categories /add GET page is in development"
 
 
 @router.get("{/category_id}")
@@ -222,6 +222,6 @@ async def update_category(
         )
 
 
-@router.get("{/category_id}/edit")
-def get_update_categories_form(category_id: int):
-    return f"Categories GET page for /categories/{category_id}/edit is in development"
+# @router.get("{/category_id}/edit")
+# def get_update_categories_form(category_id: int):
+#     return f"Categories GET page for /categories/{category_id}/edit is in development"

@@ -5,7 +5,6 @@ from sqlalchemy import select, insert
 
 from currency_service.src.domain.entities.exchange_rate import ExchangeRateDTO, AddExchangeRateDTO
 from currency_service.src.infrastructure.models.exchange_rate import ExchangeRateORM
-from currency_service.src.infrastructure.repositories.db_repo import database_repository
 
 
 class ExchangeRateRepository:

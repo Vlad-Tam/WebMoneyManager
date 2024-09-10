@@ -10,7 +10,7 @@ from sqlalchemy.orm import sessionmaker
 
 from currency_service.src.infrastructure.config.db_config import db_config_test
 from currency_service.src.infrastructure.models.base import Base
-from currency_service.src.main import app
+# from currency_service.src.main import app
 
 
 class DatabaseRepositoryTest:
@@ -38,7 +38,7 @@ def event_loop():
     loop.close()
 
 
-@pytest.fixture(scope="session")
-async def ac() -> AsyncGenerator[AsyncClient, None]:
-    async with AsyncClient(app=app, base_url="http://test/currency") as ac:
-        yield ac
+# @pytest.fixture(scope="session")
+# async def ac() -> AsyncGenerator[AsyncClient, None]:
+#     async with AsyncClient(app=app, base_url="http://test/currency") as ac:
+#         yield ac

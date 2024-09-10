@@ -1,22 +1,34 @@
-import pika
+from pathlib import Path
+from urllib.parse import quote_plus
 
-RMQ_HOST = "127.0.0.1"
-RMQ_PORT = "5672"
-RMQ_USER = "guest"
-RMQ_PASSWORD = "guest"
-RMQ_ROUTING_KEY = "currency"
-RMQ_EXCHANGE = ""
-RMQ_REQUEST_QUEUE = "request_queue"
-RMQ_RESPONSE_QUEUE = "response_queue"
+import pika
+from pydantic import Field, SecretStr
+from pydantic_settings import BaseSettings
+
+
+class RMQConfig(BaseSettings):
+
+    def __init__(self):
+        config_dir = Path(__file__).parent.parent.parent.parent / 'config'
+        dotenv_path = config_dir / 'rmq.env'
+        super().__init__(_env_file=dotenv_path)
+
+    RMQ_HOST: str = Field(...)
+    RMQ_PORT: str = Field(...)
+    RMQ_USER: str = Field(...)
+    RMQ_PASSWORD: SecretStr = Field(...)
+    RMQ_REQUEST_QUEUE: str = Field(...)
+    RMQ_RESPONSE_QUEUE: str = Field(...)
+
+    def get_password(self) -> str:
+        return quote_plus(self.RMQ_PASSWORD.get_secret_value())
+
+
+rmq_config = RMQConfig()
+
 
 connection_params = pika.ConnectionParameters(
-    host=RMQ_HOST,
-    port=RMQ_PORT,
-    credentials=pika.PlainCredentials(RMQ_USER, RMQ_PASSWORD),
+    host=rmq_config.RMQ_HOST,
+    port=rmq_config.RMQ_PORT,
+    credentials=pika.PlainCredentials(rmq_config.RMQ_USER, rmq_config.get_password()),
 )
-
-
-def get_connection() -> pika.BlockingConnection:
-    return pika.BlockingConnection(
-        parameters=connection_params,
-    )

@@ -1,12 +1,10 @@
 from typing import Union
 
-import asyncio
-
 from main_service.src.domain.entities.request import RequestModel
 from main_service.src.domain.entities.response import ResponseSuccess, ResponseFailure, ResponseModel, ResponseStatus
 from main_service.src.domain.interfaces.usecase import IUseCase
 from main_service.src.infrastructure.config.logging_config import logging_config
-from main_service.src.infrastructure.repositories.rmq_rpc_client import RPCClient
+from main_service.src.infrastructure.repositories.rmq_rpc_client_repo import RPCClientRepo
 
 
 class SendCurrencyRequest(IUseCase):
@@ -29,7 +27,7 @@ class SendCurrencyRequest(IUseCase):
     async def execute(self, request: Request):
         self.logger.debug(f"Method '{self.__class__.__name__}.execute' was called")
 
-        rpc_client = RPCClient()
+        rpc_client = RPCClientRepo()
         response = await rpc_client.call(request.request_data)
         if response == "timeout":
             self.logger.error(f"Method '{self.__class__.__name__}.call' raised an exception (timeout)")

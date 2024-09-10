@@ -1,11 +1,8 @@
 alembic
-fastapi[all]
-fastapi-users[sqlalchemy]
 asyncpg
 asyncio
 python-dotenv
 sqlalchemy
-uvicorn
 pydantic
 aiohttp
 pytest
@@ -13,4 +10,3 @@ pytest-asyncio
 pytest-cov
 pika
 pika-stubs
-aio-pika

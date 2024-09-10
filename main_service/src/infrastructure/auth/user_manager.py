@@ -1,4 +1,3 @@
-import uuid
 from typing import Optional, TYPE_CHECKING
 
 from fastapi_users import BaseUserManager, IntegerIDMixin

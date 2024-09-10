@@ -1,4 +1,3 @@
-import fastapi_users.router
 from fastapi import APIRouter
 
 from main_service.src.domain.entities.user import UserCreate, UserRead
